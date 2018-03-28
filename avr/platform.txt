@@ -1,0 +1,22 @@
+name=Fluo Tech AVR side
+version=0.0.1
+
+tools.fluoavrdude.cmd={runtime.hardware.path}/avr/avrdude_ota/avrdude
+
+tools.fluoavrdude.cmd.linux={runtime.hardware.path}/avr/avrdude_ota/avrdude
+tools.fluoavrdude.cmd.windows={runtime.hardware.path}/avr/avrdude_ota/avrdude.exe
+tools.fluoavrdude.cmd.macosx={runtime.hardware.path}/avr/avrdude_ota/avrdude.mac
+
+tools.fluoavrdude.config.path={runtime.hardware.path}/avr/avrdude_ota/avrdude.conf
+
+# OPT
+tools.fluoavrdude.upload.verify=
+tools.fluoavrdude.upload.params.noverify=-V
+tools.fluoavrdude.upload.params.verbose=-v
+tools.fluoavrdude.upload.params.quiet=-q -q
+
+# NO OTA
+tools.fluoavrdude.upload.pattern={upload.patternSERIAL}
+
+# OTA FLUO WIFI
+tools.fluoavrdude.upload.network_pattern={upload.network.pattern}

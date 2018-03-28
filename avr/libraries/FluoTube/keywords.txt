@@ -1,0 +1,69 @@
+#######################################
+# Syntax Coloring Map For FluoTube
+#######################################
+
+#######################################
+# Library (KEYWORD1)
+#######################################
+
+FluoTube	KEYWORD1
+
+#######################################
+# Class (LITERAL1)
+#######################################
+
+Task	LITERAL1
+Task1	LITERAL1
+Task2	LITERAL1
+Task3	LITERAL1
+
+Cloud	LITERAL1
+WiFi	LITERAL1
+Telegram	LITERAL1
+ThingSpeak	LITERAL1
+Sd	LITERAL1
+EasyString	LITERAL1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+# Fluo
+Begin	KEYWORD2
+
+# Wifi
+ConnectionToAP	KEYWORD2
+SetHostName	KEYWORD2
+ScanWiFiNetwork	KEYWORD2
+WiFiInfo	KEYWORD2
+
+# Telegram
+SetToken	KEYWORD2
+SetCredential	KEYWORD2
+Request	KEYWORD2
+
+# ThingSpeak
+SetWriteAPIKey	KEYWORD2
+Request	KEYWORD2
+
+# Sd
+Erase	KEYWORD2
+Write	KEYWORD2
+
+# Task
+CheckTimer	KEYWORD2
+StartTimer	KEYWORD2
+StopTimer	KEYWORD2
+
+# SmartConfig
+SET_APEnable	KEYWORD2
+SET_Hostname	KEYWORD2
+SET_WiFi	KEYWORD2
+SET_APDisable	KEYWORD2
+
+#######################################
+# Prototype & datatype (KEYWORD3)
+#######################################
+
+EasyString	KEYWORD3
+response	KEYWORD3
