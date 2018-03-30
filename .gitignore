@@ -20,18 +20,15 @@
 *.mod
 *.smod
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
 # Executables
 *.out
 *.app
 
-# Toolchain ESP32 	
+# Toolchain ESP32 and tools	
 /esp32/tools/xtensa-esp32-elf/*
+/esp32/tools/dist/*
+/esp32/tools/mkspiffs/*
+
 
 #SO shit
 .DS_Store
