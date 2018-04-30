@@ -10,10 +10,7 @@ Original version:
 */
 
 
-#include <Arduino.h>
-#include <SPI.h>
 #include <pgmspace.h>
-#include <WiFi.h>
 
 #include "ESP32AVRISP.h"
 #include "command.h"

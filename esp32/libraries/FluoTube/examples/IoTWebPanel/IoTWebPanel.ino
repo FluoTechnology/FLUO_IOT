@@ -1,3 +1,19 @@
+/*
+  IoTWebPanel
+
+  Sketch to ESP (ESP32) side !
+
+  To available Fluo IoT Panel:
+  http://fluotechnology.co.uk/home/wiki/#iot
+
+  modified 8 Gen 2018
+  by Adriano Costanzo
+
+  This example code is in the public domain.
+
+  http://www.fluotecnology.co.uk/
+*/
+
 #include <Fluoweb.h>
 
 void setup() {

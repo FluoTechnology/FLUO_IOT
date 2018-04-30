@@ -32,8 +32,14 @@ struct Content_t{
     byte ready;
 };
 
+struct WebSocket_t{
+    String data;
+    int sem;
+};
+
 extern struct WiFi_t WiFi_setting;
 extern struct Content_t Content; 
+extern struct WebSocket_t WebSocketSms; 
 
 class FluoTubeClass_WIFI
 {
@@ -43,14 +49,17 @@ class FluoTubeClass_WIFI
         String Setting(String, String, String);
         String ServerRest();
         String RestRead();
+        int RestWrite(String data);
 
-        int    Available();
+        int Available();
 
         // AUX
 		String Info();
         String ScanWiFiNetwork();
 
         String ReadMacADDR();
+
+
 
 	private:
 	protected:

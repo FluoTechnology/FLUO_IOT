@@ -19,7 +19,7 @@
 #include "FluoTube.h"
 
 
-//#define DEBUG
+
 #define VERSION "V01"
 #define VIRTUALBAUD 57600
 
@@ -52,8 +52,8 @@ FluoTubeClass::FluoTubeClass()
 
 void FluoTubeClass::Begin()  //check if FluoTube is ready
 {
-    Serial.begin(115200); //remember right baud use
-    pinMode(esp32Interrupt, INPUT);
+    //Serial.begin(115200); //remember right baud use
+    // pinMode(esp32Interrupt, INPUT);
     pinMode(13, OUTPUT); // already set
   
     Virtual.begin(VIRTUALBAUD);
@@ -418,6 +418,18 @@ void ContentHandle(String data)
     Content.ready = 1; 
 }
 
+void WebSocketSend(String data)
+{
+    if (WebSocketSms.sem == 1)
+    {
+        Virtual.println(WebSocketSms.data);
+        WebSocketSms.sem = 0; // came back available
+    }
+    
+    if (WebSocketSms.sem == 0)
+        Virtual.println("");
+}
+
 void SerialSend(String data)
 {
     String tmp = "ESP: " + data;
@@ -439,7 +451,6 @@ void WiFi(int args, String data)
         return;  
     }
 
-// lavoro in ACK
     if (args == SSID)
     {
         Virtual.println(WiFi_setting.ssid);
@@ -577,6 +588,9 @@ void SerialParser(void) {
   }
   else if (cmd == "string") {
       ContentHandle(data);   
+  }
+  else if (cmd == "wstxt") {
+      WebSocketSend(data);   
   }
   else if (cmd == "srs") {
       SerialSend(data);   

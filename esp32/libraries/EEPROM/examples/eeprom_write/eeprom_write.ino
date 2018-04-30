@@ -34,7 +34,7 @@ void setup()
     FluoTube.debug(" ");
   }
 
-  FluoTube.debugln();
+  FluoTube.debugln("");
   FluoTube.debugln("writing random n in memory");
 }
 
@@ -51,7 +51,7 @@ void loop()
   EEPROM.write(addr, val);
 
   FluoTube.debug( String(val) ); 
-  FluoTube.debug(" ");
+  FluoTube.debug("");
 
   // advance to the next address.  there are 512 bytes in
   // the EEPROM, so go back to 0 when we hit 512.
@@ -59,7 +59,7 @@ void loop()
   addr = addr + 1;
   if (addr == EEPROM_SIZE)
   {
-    FluoTube.debugln();
+    FluoTube.debugln("");
     addr = 0;
     EEPROM.commit();
 
@@ -69,10 +69,10 @@ void loop()
     for (int i = 0; i < EEPROM_SIZE; i++)
     {
       FluoTube.debug( String(byte(EEPROM.read(i))) ); 
-      FluoTube.debug(" ");
+      FluoTube.debug("");
     }
 
-    FluoTube.debugln(); 
+    FluoTube.debugln(""); 
     FluoTube.debugln("----------------------------------");
   }
 

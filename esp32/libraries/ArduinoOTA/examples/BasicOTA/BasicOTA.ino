@@ -68,7 +68,7 @@ void setup() {
   FluoTube.debugln("Ready");
   
   FluoTube.debug("IP address: ");
-  FluoTube.debugln( String(WiFi.localIP()) );
+  FluoTube.debugln( WiFi.localIP().toString() );
 }
 
 void loop() {

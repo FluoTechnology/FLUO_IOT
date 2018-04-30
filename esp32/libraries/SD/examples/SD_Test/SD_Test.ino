@@ -1,7 +1,8 @@
+#include <Fluotube.h>
 #include "FS.h"
 #include "SD.h"
 #include "SPI.h"
-#include <Fluotube.h>
+
 
 void listDir(fs::FS &fs, const char * dirname, uint8_t levels);
 void createDir(fs::FS &fs, const char * path);
@@ -40,7 +41,7 @@ void setup(){
         FluoTube.debugln("UNKNOWN");
     }
 
-    uint64_t cardSize = SD.cardSize() / (1024 * 1024);
+    uint32_t cardSize = SD.cardSize() / (1024 * 1024);
     FluoTube.debugln("SD Card Size: " + String(cardSize) + " MB");
 
     listDir(SD, "/", 0);
@@ -56,8 +57,11 @@ void setup(){
     readFile(SD, "/foo.txt");
     testFileIO(SD, "/test.txt");
 
-    FluoTube.debugln("Total space: " + String( SD.totalBytes() / (1024 * 1024) ) + " MB");
-    FluoTube.debugln("Used space: " + String( SD.usedBytes() / (1024 * 1024) ) + " MB");
+    uint32_t totalBytes = SD.totalBytes() / (1024 * 1024);
+    uint32_t usedBytes = SD.usedBytes() / (1024 * 1024);
+    
+    FluoTube.debugln("Total space: " + String(totalBytes) + " MB");
+    FluoTube.debugln("Used space: " + String(usedBytes) + " MB");
 }
 
 void loop(){
@@ -107,7 +111,7 @@ void createDir(fs::FS &fs, const char * path){
 }
 
 void removeDir(fs::FS &fs, const char * path){
-    FluoTube.debugln("Removing Dir: %s\n", path);
+    FluoTube.debugln("Removing Dir: " + String(path));
     if(fs.rmdir(path)){
         FluoTube.debugln("Dir removed");
     } else {

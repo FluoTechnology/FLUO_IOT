@@ -53,4 +53,6 @@ void VirtualConnection(String);
 
 int VirtualMacADDR(String tmp);
 
+String VirtualReadAvrMsg();
+
 #endif

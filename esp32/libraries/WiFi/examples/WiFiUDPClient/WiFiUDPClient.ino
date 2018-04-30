@@ -62,7 +62,7 @@ void WiFiEvent(WiFiEvent_t event){
       case SYSTEM_EVENT_STA_GOT_IP:
           //When connected set 
           FluoTube.debug("WiFi connected! IP address: ");
-          FluoTube.debugln( String(WiFi.localIP()) );  
+          FluoTube.debugln( WiFi.localIP().toString() );  
           //initializes the UDP state
           //This initializes the transfer buffer
           udp.begin(WiFi.localIP(),udpPort);

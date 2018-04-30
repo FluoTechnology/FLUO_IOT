@@ -94,11 +94,11 @@ void WiFiEvent(WiFiEvent_t event){
             break;
         case SYSTEM_EVENT_AP_STA_GOT_IP6:
             FluoTube.debug("STA IPv6: ");
-            FluoTube.debugln( String(WiFi.localIPv6()) );
+            FluoTube.debugln( WiFi.localIPv6().toString() );
             break;
         case SYSTEM_EVENT_STA_GOT_IP:
             FluoTube.debug("STA IPv4: ");
-            FluoTube.debugln( String(WiFi.localIP()) );
+            FluoTube.debugln( WiFi.localIP().toString() );
             break;
         case SYSTEM_EVENT_STA_DISCONNECTED:
             FluoTube.debugln("STA Disconnected");

@@ -31,8 +31,11 @@ extern struct AnalogGpioMap_t   AnalogGpioMap[6];
 
 extern void Task644ReadInput();
 
+extern byte TaskServiceExec;
+extern byte Task644ReadInputExec;
+
 int CheckInterrupt(void);
-void HardwareInit();
+void HardwareInit(int safemode);
 
 bool hasExp(unsigned long &prevTime, unsigned long interval);
 char* string2char(String command);

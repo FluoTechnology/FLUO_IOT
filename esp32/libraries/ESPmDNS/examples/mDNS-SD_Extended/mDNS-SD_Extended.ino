@@ -29,8 +29,11 @@ void setup() {
     FluoTube.debugln("");
     FluoTube.debug("Connected to ");
     FluoTube.debugln( String(ssid) );
+
+    delay(1000);
+
     FluoTube.debug("IP address: ");
-    FluoTube.debugln( String(WiFi.localIP()) );
+    FluoTube.debugln( WiFi.localIP().toString() );
 
     if (!MDNS.begin("ESP32_Browser")) {
         FluoTube.debugln("Error setting up MDNS responder");
@@ -67,7 +70,7 @@ void browseService(const char * service, const char * proto){
     if (n == 0) {
         FluoTube.debugln("no services found");
     } else {
-        FluoTube.debug(n);
+        FluoTube.debug( String(n) );
         FluoTube.debugln(" service(s) found");
         for (int i = 0; i < n; ++i) {
             // Print details for each service found
@@ -82,5 +85,5 @@ void browseService(const char * service, const char * proto){
             FluoTube.debugln(")");
         }
     }
-    FluoTube.debugln();
+    FluoTube.debugln("");
 }

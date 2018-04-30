@@ -2,6 +2,7 @@
 #include <ESPmDNS.h>
 #include <ESP32AVRISP.h>
 #include <WebServer.h>
+#include <WebSocketsServer.h>
 
 #include "Fluoweb.h"
 #include "Fluohtml.h"
@@ -10,11 +11,15 @@
 #include "EEPROM.h"
 #include "644VirtualCom/protocol.h"
 
+
+
 WebServer serverIoT(80);
 
 WebServer serverMANUAL(8080);
 
 WiFiServer serverWIFI(80); 
+
+WebSocketsServer webSocket(8888);
 
 WiFiCallbackClass WiFiCallback;
 
@@ -34,6 +39,14 @@ enum{
   PASSKEY_NOVALID,
   FAILURE
 };
+
+// websocket struct
+struct socketWeb{ 
+  WStype_t typeMess;
+  String uri = "";
+  int member = -1;  
+}webSocketData;
+
 //struct for args
 struct Args
 {
@@ -55,15 +68,18 @@ int getRSSIasQuality(int);
 void PopulateArgsArrey(char *);
 void AP_SettingMode();
 void STA_SettingMode();
-void MANUAL_SettingMode();
+void MANUAL_HandleMode();
 void ActivateManualMode();
 void RESThandle();
-void WiFiEvent(WiFiEvent_t);
+void WiFiEvent_I(WiFiEvent_t);
 int ComputeBar(int);
 
 void ReadSetting(struct settings_t *);
 void storeStruct(void *, size_t);
 void loadStruct(void *, size_t);
+
+void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length);
+void WEBSOCKEThandle();
 
 // Global Variable
 //System
@@ -83,7 +99,7 @@ int MMMode;
 
 void WebSetup(void)
 {  
-	HardwareInit();
+	HardwareInit(0);
 
     // WiFi Setting - occhio !!!
     WiFi.setAutoConnect(false);
@@ -93,7 +109,7 @@ void WebSetup(void)
   
     delay(10);
 
-    WiFi.onEvent(WiFiEvent); // start
+    WiFi.onEvent(WiFiEvent_I); // start
 
     delay(2000);
 
@@ -114,17 +130,16 @@ byte ManualMode;
 void ActivateManualMode()
 {
 
-    //WiFi.mode(WIFI_MODE_STA);
-    //Serial.println("[ManualMODE] STA mode and try to connect");
-
     String hostname = VirtualHOSTNAME(); // hostname
-    delay(100);
+    delay(1000);
     String passkey = VirtualPASSKEY(); // passkey
-    delay(100);
+    delay(1000);
     String ssid = VirtualSSID(); // ssid
-    delay(100);
+    delay(1000);
 
-    Serial.println(hostname); Serial.println(passkey); Serial.println(ssid);
+    Serial.println("[ActivateManualMode] Hostname: " + hostname); 
+    Serial.println("[ActivateManualMode] Passkey: " + passkey); 
+    Serial.println("[ActivateManualMode] SSID: " + ssid);
 
     WiFi.mode(WIFI_MODE_STA);
     delay(1000);
@@ -142,7 +157,7 @@ void ActivateManualMode()
         i++;
     }
 
-    VirtualConnection(WiFi.localIP().toString());
+    VirtualConnection( WiFi.localIP().toString() );
 
     if (i >= 15) // non provare a configurare MDNS
         return;
@@ -155,6 +170,11 @@ void ActivateManualMode()
     //Add service to MDNS-WEB
     MDNS.addService("http", "tcp", 80);
 
+    webSocket.begin();
+    webSocket.onEvent(webSocketEvent);
+
+    Serial.println("[WebSocket] Init and ready to receive");
+
     delay(500); 
 }
 
@@ -165,13 +185,17 @@ void WebLoop(void)
     if (MMMode == 2)
     {
         ActivateManualMode();
+
         Scheduler(); //force
         return;
     }
 
     if (ManualMode == 1 && MMMode == 1)
     {
-        MANUAL_SettingMode();
+
+        MANUAL_HandleMode();
+        webSocket.loop();
+
         Scheduler(); //force
         return;
     }
@@ -190,6 +214,8 @@ void WebLoop(void)
         STA_SettingMode();
     else
         AP_SettingMode();
+
+    Task644ReadInputExec = 0; //disable
 
     // if only free time ?
     Scheduler();
@@ -312,7 +338,7 @@ void CheckInternet()
 //--------------------------------------------------------
 // WiFiEvent_t event
 
-void WiFiEvent(WiFiEvent_t event)
+void WiFiEvent_I(WiFiEvent_t event)
 {
     switch(event) 
     {
@@ -1342,7 +1368,7 @@ serverIoT.handleClient();
 
 // START MANUAL MODE
 
-void MANUAL_SettingMode()
+void MANUAL_HandleMode()
 { 
 
 static byte oneshot;
@@ -1354,41 +1380,94 @@ if (!oneshot)
     oneshot = 1; 
 }
 
+String rd = "";
+rd = VirtualReadAvrMsg();
+
+if(rd != "" && webSocketData.typeMess == WStype_CONNECTED)
+{
+    String message = "Sms: ";
+    message += rd;
+    webSocket.sendTXT(webSocketData.member, message);
+
+    Serial.println("[MANUAL_HandleMode] From AVR: " + rd + "\n");
+}
+
 //loop
 serverMANUAL.handleClient();
 
 }
 
 
-void RESThandle()
-{
-    // Check if a client has connected
-    String message = "";
-    message += "URI: ";
-    message += serverMANUAL.uri();
-    message += "\nMethod: ";
-    message += (serverMANUAL.method() == HTTP_GET)?"GET":"POST";
-    message += "\nArguments: ";
-    message += serverMANUAL.args();
-    message += "\n";
+void RESThandle(){
 
-    for (uint8_t i=0; i<serverMANUAL.args(); i++){
-        message += " " + serverMANUAL.argName(i) + ": " + serverMANUAL.arg(i) + "\n";
-    }
+    Serial.println("[RESThandle] URI: " + serverMANUAL.uri());
 
-    serverMANUAL.send(200, "text/plain", message);
-    
-    // invio la stringa al 664p
-    VirtualStringSend(serverMANUAL.uri());
+    if(serverMANUAL.uri() == "/favicon.ico")
+        return;
 
+    webSocketData.uri = serverMANUAL.uri();       //GUARDA QUA
+    String page = FPSTR(HTTP_WEBSOCKET_HEAD);
+    page += FPSTR(HTTP_WEBSOCKET_STYLE);
+    page += FPSTR(HTTP_WEBSOCKET_ENDHEAD);
+    page += FPSTR(HTTP_WEBSOCKET_BODY);    
+    page += FPSTR(HTTP_WEBSOCKET_INITSCRIPT); 
+
+    page += "ws://" + WiFi.localIP().toString() + ":8888/"; 
+
+    page += FPSTR(HTTP_WEBSOCKET_SCRIPT);    
+    page += FPSTR(HTTP_WEBSOCKET_ENDBODY);
+
+    serverMANUAL.send(200, "text/html", page);
+
+    Serial.println("[RESThandle] Websocket page send\n");
+ 
 }
 
 
+void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length) 
+{
+
+    switch(type) 
+    {
+        case WStype_DISCONNECTED:
+        {
+            Serial.printf("[%u] Disconnected!\n", num);
+            webSocketData.typeMess = WStype_DISCONNECTED;
+            break;
+        }
+
+        case WStype_CONNECTED:
+        {
+            IPAddress ip = webSocket.remoteIP(num);
+            Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
+            
+            webSocketData.typeMess = WStype_CONNECTED;
+            webSocketData.member = num;
+
+            WEBSOCKEThandle();
+            break;
+        }
+    }
+}
 
 
+void WEBSOCKEThandle()
+{
+  
+  Serial.println("[WebSocket] Send data\n");
 
+  VirtualStringSend(webSocketData.uri);
 
+  String message = "";
+  message += "URI: ";
+  message += webSocketData.uri;
+  webSocket.sendTXT(webSocketData.member, message);
 
+  message = "Method: ";
+  message += (serverMANUAL.method() == HTTP_GET)?"GET":"POST";
+  webSocket.sendTXT(webSocketData.member, message);
+  
+}
 
 
 

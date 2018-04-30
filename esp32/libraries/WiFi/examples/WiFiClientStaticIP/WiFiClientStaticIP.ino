@@ -41,19 +41,19 @@ void setup()
   FluoTube.debugln("WiFi connected");
 
   FluoTube.debug("IP address: ");
-  FluoTube.debugln( String(WiFi.localIP()) );
+  FluoTube.debugln( WiFi.localIP().toString() );
 
   FluoTube.debug("ESP Mac Address: "); 
-  FluoTube.debugln( String(WiFi.macAddress()) );
+  FluoTube.debugln( WiFi.macAddress().toString() );
 
   FluoTube.debug("Subnet Mask: ");
-  FluoTube.debugln( String(WiFi.subnetMask()) );
+  FluoTube.debugln( WiFi.subnetMask().toString() );
 
   FluoTube.debug("Gateway IP: ");
-  FluoTube.debugln( String(WiFi.gatewayIP()) );
+  FluoTube.debugln( WiFi.gatewayIP().toString() );
 
   FluoTube.debug("DNS: ");
-  FluoTube.debugln( String(WiFi.dnsIP()) );
+  FluoTube.debugln( WiFi.dnsIP().toString() );
 }
 
 void loop()
@@ -93,7 +93,7 @@ void loop()
     FluoTube.debug( String(line) );
   }
 
-  FluoTube.debugln();
+  FluoTube.debugln("");
   FluoTube.debugln("closing connection");
 }
 

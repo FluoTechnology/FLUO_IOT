@@ -2,7 +2,7 @@ menu.DebugLevel=Core Debug Level
 
 ##############################################################
 
-fluowifi.name=FLUO WI-FI (ESP)
+fluowifi.name=FLUO GENERIC WI-FI (ESP32)
 
 fluowifi.upload.tool=esptool
 fluowifi.upload.maximum_size=1310720
@@ -14,7 +14,7 @@ fluowifi.serial.disableRTS=true
 
 fluowifi.build.mcu=esp32
 fluowifi.build.core=esp32
-fluowifi.build.variant=fluowifi
+fluowifi.build.variant=fluogeneric
 fluowifi.build.board=ESP32_DEV
 
 

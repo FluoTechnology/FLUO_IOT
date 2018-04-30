@@ -36,7 +36,7 @@ void ISR_TOUCH_TEST()
   StateTOUCHTEST = 1; 
 }
 
-void HardwareInit()
+void HardwareInit(int safemode)
 {
     pinMode(LED_STATUS, OUTPUT); 
     pinMode(LED_LINK, OUTPUT);
@@ -65,12 +65,15 @@ void HardwareInit()
     pinMode(BUTTON_APRST, INPUT_PULLUP);
   
     attachInterrupt(digitalPinToInterrupt(BUTTON_APRST), ISR_AP_RST, CHANGE);
-    touchAttachInterrupt(BUTTON_CHECK, ISR_TOUCH_TEST, 40);
   
     Serial.begin(115200);
     SerialInternal.begin(57600);
 
-    SDCardInit();
+    if (safemode == 0)
+    {   
+        touchAttachInterrupt(BUTTON_CHECK, ISR_TOUCH_TEST, 40);
+        SDCardInit();
+    }   
 
     MillisStart = millis();
 }

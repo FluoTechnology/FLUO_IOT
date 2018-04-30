@@ -173,6 +173,20 @@ void VirtualConnection(String tmp)
     SerialInternal.print( cmdBuild("conn", tmp ));
 }
 
+String VirtualReadAvrMsg()
+{
+    String args = "";
+
+    SerialInternal.print( cmdBuild("wstxt", args) );
+        
+    // Read reply -- ACK
+    String rd = SerialInternal.readString();
+    rd.replace("\r\n", "");
+
+    return rd;
+}
+
+
 int VirtualMacADDR(String tmp)
 {
 

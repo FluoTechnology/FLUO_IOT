@@ -16,6 +16,8 @@
 
 struct WiFi_t WiFi_setting = {"ssid", "pass", "hostname", 0, "null", "null", 0};
 struct Content_t Content = {"data", 0, 0};
+struct WebSocket_t WebSocketSms = {"data", 0};
+
 
 
 String FluoTubeClass_WIFI::Setting(String ssid, String key, String host)
@@ -25,13 +27,23 @@ String FluoTubeClass_WIFI::Setting(String ssid, String key, String host)
     WiFi_setting.hostname = host;
 
     WiFi_setting.stored = 2; 
-    
     // lo metto a 2 cosi FluoTube.c sa che e' arrivata una nuova conf.
 
-    return "Stored!"; 	
+    return "Stored"; 	
 }
 
+int FluoTubeClass_WIFI::RestWrite(String data)
+{
+  
+    if(WebSocketSms.sem == 0)
+    {
+        WebSocketSms.data = data;
+        WebSocketSms.sem = 1;
+        return 0; //"Sent"
+    }
 
+    return 1; // "Wait, function not available"
+}
 
 String FluoTubeClass_WIFI::ServerRest()
 {

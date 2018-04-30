@@ -253,6 +253,8 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
 
 	PE	, // PE 6 ** 73 ** VIRT TX/RX OLD	
 	PE	, // PE 2 ** 74 ** VIRT TX/RX OLD
+
+	PH ,  // oled reset
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
@@ -336,6 +338,8 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
 	
 	_BV( 6 )	, // PE 6 ** 72 ** VIRT TX/RX OLD
 	_BV( 2 )	, // PE 2 ** 72 ** VIRT TX/RX OLD
+
+	_BV(7) ,    //oled reset //75
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {

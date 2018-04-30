@@ -72,10 +72,9 @@ void FluoTubeClass::debugln(String txt)
 }
 
 //Init
-
 void FluoTubeClass::setup()
 {
-    HardwareInit();
+    HardwareInit(1);
     delay(1000); // wait AVR start
 }
 

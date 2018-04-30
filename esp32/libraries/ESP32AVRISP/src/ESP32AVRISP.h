@@ -13,6 +13,9 @@ Original version:
 #define _ESP32AVRISP_H
 
 #include <Arduino.h>
+#include <SPI.h>
+#include <WiFi.h>
+#include <ESPmDNS.h>
 
 // uncomment if you use an n-mos to level-shift the reset line
 // #define AVRISP_ACTIVE_HIGH_RESET
